@@ -4,8 +4,10 @@ import (
     "fmt"
 )
 
+type t = uint8
+
 type node struct {
-    value uint8
+    value t
     next  *node
 }
 
@@ -13,7 +15,7 @@ type linkedList struct {
     head *node
 }
 
-func (l *linkedList) push(v uint8) {
+func (l *linkedList) push(v t) {
     currentNode := l.head
     nextNode := node{
         value: v,
@@ -22,7 +24,7 @@ func (l *linkedList) push(v uint8) {
     l.head = &nextNode
 }
 
-func (l *linkedList) pop() (uint8, error) {
+func (l *linkedList) pop() (t, error) {
     if l.head == nil {
         return 0, fmt.Errorf("(%v).pop()", l)
     }
@@ -32,7 +34,7 @@ func (l *linkedList) pop() (uint8, error) {
     return value, nil
 }
 
-func (l *linkedList) popAt(n uint) (uint8, error) {
+func (l *linkedList) popAt(n uint) (t, error) {
     var prevNode *node
     currentNode := l.head
     for i := uint(0); i < n; i++ {
@@ -66,7 +68,7 @@ func main() {
     l := linkedList{
         head: nil,
     }
-    for i := uint8(0); i < 10; i++ {
+    for i := t(0); i < 10; i++ {
         l.push(i)
     }
     l.print()
@@ -81,7 +83,7 @@ func main() {
         }
     }
     l.print()
-    for i := uint8(11); i < 13; i++ {
+    for i := t(11); i < 13; i++ {
         l.push(i)
     }
     l.print()
