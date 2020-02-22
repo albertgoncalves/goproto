@@ -57,17 +57,14 @@ func (l linkedList) print() {
     currentNode = l.head
     fmt.Print("[")
     for currentNode != nil {
-        fmt.Print(" ")
-        fmt.Print(currentNode.value)
+        fmt.Print(" ", currentNode.value)
         currentNode = currentNode.next
     }
     fmt.Println("]")
 }
 
 func main() {
-    l := linkedList{
-        head: nil,
-    }
+    l := linkedList{}
     for i := t(0); i < 10; i++ {
         l.push(i)
     }
