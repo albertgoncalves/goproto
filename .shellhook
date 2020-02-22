@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+export GOPATH=$PWD
+
+if [ "$(uname -s)" = "Darwin" ]; then
+    alias ls="ls --color=auto"
+    alias ll="ls -l"
+else
+    alias open="xdg-open"
+fi
+
+gofmts() {
+    if gofmt -w -s -e "$1"; then
+        awk '{ gsub(/\t/, "    "); print }' < "$1" > tmp
+        cat tmp > "$1"
+        rm tmp
+    fi
+}
+
+goall() {
+    cd "$GOPATH" || exit
+    find . -type f -name '*.go' \
+        -exec bash -c 'echo "$0"; golint "$0"; gofmts "$0"' {} \;
+}
+
+export -f gofmts
+export -f goall
