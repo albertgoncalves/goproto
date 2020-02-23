@@ -15,10 +15,10 @@ type linkedList struct {
     head *node
 }
 
-func (list *linkedList) push(v t) {
+func (list *linkedList) push(value t) {
     currentNode := list.head
     nextNode := node{
-        value: v,
+        value: value,
         next:  currentNode,
     }
     list.head = &nextNode
