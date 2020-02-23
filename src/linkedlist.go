@@ -6,6 +6,8 @@ import (
 
 type t = uint8
 
+const DEFAULT t = 0
+
 type node struct {
     value t
     next  *node
@@ -26,7 +28,7 @@ func (list *linkedList) push(value t) {
 
 func (list *linkedList) pop() (t, error) {
     if list.head == nil {
-        return 0, fmt.Errorf("(%v).pop()", list)
+        return DEFAULT, fmt.Errorf("(%v).pop()", list)
     }
     currentNode := list.head
     value := currentNode.value
@@ -39,7 +41,7 @@ func (list *linkedList) popAt(n uint) (t, error) {
     currentNode := list.head
     for i := uint(0); i < n; i++ {
         if currentNode == nil || currentNode.next == nil {
-            return 0, fmt.Errorf("(%v).popAt(%d)", list, n)
+            return DEFAULT, fmt.Errorf("(%v).popAt(%d)", list, n)
         }
         prevNode = currentNode
         currentNode = currentNode.next

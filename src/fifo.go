@@ -6,6 +6,8 @@ import (
 
 type t = uint8
 
+const DEFAULT t = 0
+
 type node struct {
     value t
     next  *node
@@ -34,7 +36,7 @@ func (queue *fifoQueue) push(value t) {
 
 func (queue *fifoQueue) pop() (t, error) {
     if queue.first == nil {
-        return 0, fmt.Errorf("(%v).pop()", queue)
+        return DEFAULT, fmt.Errorf("(%v).pop()", queue)
     }
     value := queue.first.value
     queue.first = queue.first.next
