@@ -74,10 +74,12 @@ func main() {
     fmt.Println(list.popAt(0))
     fmt.Println(list.popAt(7))
     list.print()
-    for err := error(nil); err == nil; _, err = list.pop() {
-        if list.head != nil {
-            fmt.Println(list.head.value)
+    for {
+        value, err := list.pop()
+        if err != nil {
+            break
         }
+        fmt.Println(value)
     }
     list.print()
     for i := t(11); i < 13; i++ {
