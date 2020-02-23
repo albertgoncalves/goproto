@@ -15,46 +15,46 @@ type linkedList struct {
     head *node
 }
 
-func (l *linkedList) push(v t) {
-    currentNode := l.head
+func (list *linkedList) push(v t) {
+    currentNode := list.head
     nextNode := node{
         value: v,
         next:  currentNode,
     }
-    l.head = &nextNode
+    list.head = &nextNode
 }
 
-func (l *linkedList) pop() (t, error) {
-    if l.head == nil {
-        return 0, fmt.Errorf("(%v).pop()", l)
+func (list *linkedList) pop() (t, error) {
+    if list.head == nil {
+        return 0, fmt.Errorf("(%v).pop()", list)
     }
-    currentNode := l.head
+    currentNode := list.head
     value := currentNode.value
-    l.head = currentNode.next
+    list.head = currentNode.next
     return value, nil
 }
 
-func (l *linkedList) popAt(n uint) (t, error) {
+func (list *linkedList) popAt(n uint) (t, error) {
     var prevNode *node
-    currentNode := l.head
+    currentNode := list.head
     for i := uint(0); i < n; i++ {
         if currentNode == nil || currentNode.next == nil {
-            return 0, fmt.Errorf("(%v).popAt(%d)", l, n)
+            return 0, fmt.Errorf("(%v).popAt(%d)", list, n)
         }
         prevNode = currentNode
         currentNode = currentNode.next
     }
     if prevNode == nil {
-        l.head = currentNode.next
+        list.head = currentNode.next
     } else {
         prevNode.next = currentNode.next
     }
     return currentNode.value, nil
 }
 
-func (l linkedList) print() {
+func (list linkedList) print() {
     var currentNode *node
-    currentNode = l.head
+    currentNode = list.head
     fmt.Print("[")
     for currentNode != nil {
         fmt.Print(" ", currentNode.value)
@@ -64,24 +64,24 @@ func (l linkedList) print() {
 }
 
 func main() {
-    l := linkedList{}
+    list := linkedList{}
     for i := t(0); i < 10; i++ {
-        l.push(i)
+        list.push(i)
     }
-    l.print()
-    fmt.Println(l.popAt(3))
-    fmt.Println(l.popAt(8))
-    fmt.Println(l.popAt(0))
-    fmt.Println(l.popAt(7))
-    l.print()
-    for err := error(nil); err == nil; _, err = l.pop() {
-        if l.head != nil {
-            fmt.Println(l.head.value)
+    list.print()
+    fmt.Println(list.popAt(3))
+    fmt.Println(list.popAt(8))
+    fmt.Println(list.popAt(0))
+    fmt.Println(list.popAt(7))
+    list.print()
+    for err := error(nil); err == nil; _, err = list.pop() {
+        if list.head != nil {
+            fmt.Println(list.head.value)
         }
     }
-    l.print()
+    list.print()
     for i := t(11); i < 13; i++ {
-        l.push(i)
+        list.push(i)
     }
-    l.print()
+    list.print()
 }
