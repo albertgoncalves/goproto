@@ -17,11 +17,17 @@ gofmts() {
     fi
 }
 
+golint_() {
+    golint "$1" \
+        | sed -n -e '/exported .* should have comment.* or be unexported/!p'
+}
+
 goall() {
     cd "$GOPATH" || exit
     find . -type f -name '*.go' \
-        -exec bash -c 'echo "$0"; golint "$0"; gofmts "$0"' {} \;
+        -exec bash -c 'echo "$0"; golint_ "$0"; gofmts "$0"' {} \;
 }
 
 export -f gofmts
+export -f golint_
 export -f goall
