@@ -53,8 +53,7 @@ func main() {
     var i t
     f := func() {
         for {
-            err := queue.push(i)
-            if err != nil {
+            if err := queue.push(i); err != nil {
                 break
             }
             i++
