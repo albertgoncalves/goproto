@@ -58,7 +58,6 @@ func (queue fifoQueue) print() {
 }
 
 func main() {
-    fmt.Println("Hello!")
     queue := fifoQueue{
         first: nil,
         last:  nil,

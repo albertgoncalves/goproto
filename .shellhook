@@ -9,6 +9,10 @@ else
     alias open="xdg-open"
 fi
 
+if [ ! -d "$GOPATH/bin" ]; then
+    mkdir "$GOPATH/bin"
+fi
+
 gofmts() {
     if gofmt -w -s -e "$1"; then
         awk '{ gsub(/\t/, "    "); print }' < "$1" > tmp
@@ -26,6 +30,12 @@ goall() {
     cd "$GOPATH" || exit
     find . -type f -name '*.go' \
         -exec bash -c 'echo "$0"; golint_ "$0"; gofmts "$0"' {} \;
+}
+
+rung() {
+    handle=$(echo "$1" | sed 's/^[a-z\/]*\/\(.*\)\.[a-z]*$/\1/')
+    go build -o "$GOPATH/bin/$handle" "$1"
+    "$GOPATH/bin/$handle"
 }
 
 export -f gofmts
