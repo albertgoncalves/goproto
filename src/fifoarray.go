@@ -9,6 +9,12 @@ type t = uint8
 const DEFAULT t = 0
 const CAPACITY uint = 10
 
+var QUEUE = fifoQueue{
+    memory:       [CAPACITY]t{},
+    index:        0,
+    remainingCap: CAPACITY,
+}
+
 type fifoQueue struct {
     memory       [CAPACITY]t
     index        uint
@@ -45,30 +51,25 @@ func (queue fifoQueue) print() {
 }
 
 func main() {
-    queue := fifoQueue{
-        memory:       [CAPACITY]t{},
-        index:        0,
-        remainingCap: CAPACITY,
-    }
     var i t
     f := func() {
         for {
-            if err := queue.push(i); err != nil {
+            if err := QUEUE.push(i); err != nil {
                 break
             }
             i++
         }
     }
     f()
-    queue.print()
+    QUEUE.print()
     for i := uint(0); i < 3; i++ {
-        value, err := queue.pop()
+        value, err := QUEUE.pop()
         if err != nil {
             break
         }
         fmt.Println(value)
     }
-    queue.print()
+    QUEUE.print()
     f()
-    queue.print()
+    QUEUE.print()
 }
