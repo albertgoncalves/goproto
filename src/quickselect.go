@@ -52,21 +52,22 @@ func quickSort(r *rand.Rand, array []t, left, right int) {
 }
 
 func main() {
-    array := []t{3, 4, 2, 5, 7, 1, 1, 8, 2, 9, 10}
+    array := []t{3, 4, 2, 5, 7, 1, 8, 2, 9, 10}
     n := len(array)
     r := rand.New(rand.NewSource(time.Now().UnixNano()))
+    fmt.Println("\noriginal array   :", array)
     {
         for i := 0; i < n; i++ {
             a := make([]t, len(array))
             copy(a, array)
-            fmt.Println(quickSelect(r, a, 0, n-1, i))
-            fmt.Println(a)
+            v := quickSelect(r, a, 0, n-1, i)
+            fmt.Println("post-quickselect :", a, "| k :", i, "| value :", v)
         }
     }
     {
         a := make([]t, len(array))
         copy(a, array)
         quickSort(r, a, 0, n-1)
-        fmt.Println(a)
+        fmt.Println("post-quicksort   :", a)
     }
 }
