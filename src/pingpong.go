@@ -4,13 +4,13 @@ import (
     "fmt"
 )
 
-var DONE = make(chan string, 1)
+var DONE = make(chan bool, 1)
 
 func pingPong(in <-chan int, out chan<- int, message string) {
     for {
         n := <-in
         if n == 0 {
-            DONE <- "Done!"
+            DONE <- true
             return
         }
         fmt.Println(message)
@@ -24,5 +24,6 @@ func main() {
     go pingPong(ping, pong, "ping")
     go pingPong(pong, ping, "pong")
     ping <- 5
-    fmt.Println(<-DONE)
+    <-DONE
+    fmt.Println("Done!")
 }
