@@ -2,9 +2,9 @@ package main
 
 import (
     "fmt"
+    "math/rand"
     "sync"
     "time"
-    "math/rand"
 )
 
 func f(wg *sync.WaitGroup, j int) {
