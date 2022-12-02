@@ -6,11 +6,10 @@ if [ ! -d "$GOPATH/bin" ]; then
     mkdir "$GOPATH/bin"
 fi
 
-gofmts() {
+gofmt_() {
     if gofmt -w -s -e "$1"; then
-        awk '{ gsub(/\t/, "    "); print }' < "$1" > tmp
-        cat tmp > "$1"
-        rm tmp
+        awk '{ gsub(/\t/, "    "); print }' < "$1" > /tmp/main.go
+        cat /tmp/main.go > "$1"
     fi
 }
 
@@ -22,7 +21,7 @@ golint_() {
 goall() {
     cd "$GOPATH" || exit
     find . -type f -name '*.go' \
-        -exec bash -c 'echo "$0"; golint_ "$0"; gofmts "$0"' {} \;
+        -exec bash -c 'echo "$0"; golint_ "$0"; gofmt_ "$0"' {} \;
 }
 
 rung() {
@@ -31,6 +30,6 @@ rung() {
     "$GOPATH/bin/$handle"
 }
 
-export -f gofmts
+export -f gofmt_
 export -f golint_
 export -f goall
