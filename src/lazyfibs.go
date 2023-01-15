@@ -5,67 +5,71 @@ import (
     "os"
 )
 
-type lazyListInt struct {
-    cached bool
-    result *listInt
-    thunk  func() *listInt
+type lazy[T any] struct {
+    thunk func() *T
 }
 
-func lazyNew(f func() *listInt) *lazyListInt {
-    return &lazyListInt{false, nil, f}
-}
-
-func (x *lazyListInt) force() *listInt {
-    if !x.cached {
-        x.result = x.thunk()
-        x.cached = true
+func lazyNew[T any](f func() *T) *lazy[T] {
+    var l lazy[T]
+    l.thunk = func() *T {
+        x := f()
+        l.thunk = func() *T {
+            return x
+        }
+        return x
     }
-    return x.result
+    return &l
 }
 
-type listInt struct {
-    value int
-    next  *lazyListInt
+func (l *lazy[T]) force() *T {
+    return l.thunk()
 }
 
-func (l *listInt) head() int {
+type list[T any] struct {
+    value T
+    next  *lazy[list[T]]
+}
+
+func (l *list[T]) head() T {
     return l.value
 }
 
-func (l *listInt) tail() *listInt {
+func (l *list[T]) tail() *list[T] {
     return l.next.force()
 }
 
-func (l *listInt) drop(n int) *listInt {
+func (l *list[T]) drop(n int) *list[T] {
     for ; n != 0; n-- {
         l = l.tail()
     }
     return l
 }
 
-func zipSum(a *listInt, b *listInt) *listInt {
-    return &listInt{a.head() + b.head(), lazyNew(
-        func() *listInt {
-            return zipSum(a.tail(), b.tail())
+func zipWith[T any](f func(T, T) T, a *list[T], b *list[T]) *list[T] {
+    return &list[T]{f(a.head(), b.head()), lazyNew(
+        func() *list[T] {
+            return zipWith(f, a.tail(), b.tail())
         },
     )}
 }
 
-func f1(l *listInt) func() *listInt {
-    return func() *listInt {
-        return &listInt{1, lazyNew(f0(l))}
-    }
-}
-
-func f0(l *listInt) func() *listInt {
-    return func() *listInt {
-        return zipSum(l, l.tail())
-    }
-}
-
 func main() {
-    var fibs listInt
-    fibs = listInt{0, lazyNew(f1(&fibs))}
+    var fibs list[int]
+    fibs = list[int]{0, lazyNew(
+        func() *list[int] {
+            return &list[int]{1, lazyNew(
+                func() *list[int] {
+                    return zipWith(
+                        func(a, b int) int {
+                            return a + b
+                        },
+                        &fibs,
+                        (&fibs).tail(),
+                    )
+                },
+            )}
+        },
+    )}
     x := fibs.drop(50).head()
     if x != 12586269025 {
         os.Exit(1)
