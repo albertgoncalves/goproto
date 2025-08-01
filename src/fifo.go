@@ -17,14 +17,14 @@ func (self *fifo[T]) pop() T {
     if len(self.out) == 0 {
         n := len(self.in)
         for i := range n {
-            self.out = append(self.out, self.in[n - (i + 1)])
+            self.out = append(self.out, self.in[n-(i+1)])
         }
         self.in = self.in[:0]
     }
 
     n := len(self.out)
-    x := self.out[n - 1]
-    self.out = self.out[:n - 1]
+    x := self.out[n-1]
+    self.out = self.out[:n-1]
     return x
 }
 
