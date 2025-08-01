@@ -24,7 +24,8 @@ gofmt_() {
 
 golint_() {
     golint "$1" \
-        | sed -n -e '/exported .* should have comment.* or be unexported/!p'
+        | sed -n -e '/exported .* should have comment.* or be unexported/!p' \
+        | sed -n -e '/.* receiver name should be a reflection of its identity; don'"'"'t use generic names such as "this" or "self"/!p'
 }
 
 goall() {
