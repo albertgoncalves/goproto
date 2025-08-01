@@ -5,24 +5,14 @@ import (
     "time"
 )
 
-const (
-    N = 5
-    M = 1
-)
-
-var (
-    FORKS [N]chan bool
-    DONE  [N]chan bool
-)
-
 func dine(left <-chan bool, right <-chan bool) {
-    fmt.Printf("Waiting for fork [%v]\n", left)
+    fmt.Println("Waiting for fork [", left, "]")
     <-left
 
     // NOTE: Create opportunity for deadlock.
     time.Sleep(50 * time.Millisecond)
 
-    fmt.Printf("Waiting for fork [%v]\n", right)
+    fmt.Println("Waiting for fork [", right, "]")
     <-right
 
     fmt.Println("Eating")
@@ -30,10 +20,10 @@ func dine(left <-chan bool, right <-chan bool) {
 }
 
 func think(left chan<- bool, right chan<- bool) {
-    fmt.Printf("Returning fork [%v]\n", left)
+    fmt.Println("Returning fork [", left, "]")
     left <- true
 
-    fmt.Printf("Returning fork [%v]\n", right)
+    fmt.Println("Returning fork [", right, "]")
     right <- true
 
     fmt.Println("Thinking")
@@ -48,25 +38,37 @@ func loop(left chan bool, right chan bool, done chan<- bool) {
     done <- true
 }
 
+const (
+    N = 5
+    M = 1
+)
+
 func main() {
+    var (
+        forks [N]chan bool
+        done  [N]chan bool
+    )
+
     for i := 0; i < N; i++ {
-        FORKS[i] = make(chan bool, 1)
-        FORKS[i] <- true
-        DONE[i] = make(chan bool, 1)
+        forks[i] = make(chan bool, 1)
+        forks[i] <- true
+        done[i] = make(chan bool, 1)
     }
 
     // NOTE: This will cause a deadlock.
-    // for i := 0; i < N; i++ {
-    //     go loop(FORKS[i], FORKS[(i+1)%N], DONE[i])
-    // }
+    /*
+       for i := 0; i < N; i++ {
+           go loop(forks[i], forks[(i+1)%N], done[i])
+       }
+    */
 
-    go loop(FORKS[1], FORKS[0], DONE[0])
+    go loop(forks[1], forks[0], done[0])
     for i := 1; i < N; i++ {
-        go loop(FORKS[i], FORKS[(i+1)%N], DONE[i])
+        go loop(forks[i], forks[(i+1)%N], done[i])
     }
 
     for i := 0; i < N; i++ {
-        <-DONE[i]
+        <-done[i]
     }
     fmt.Println("Done!")
 }
