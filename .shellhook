@@ -7,9 +7,18 @@ if [ ! -d "$GOPATH/bin" ]; then
 fi
 
 gofmt_() {
-    if gofmt -w -s -e "$1"; then
-        awk '{ gsub(/\t/, "    "); print }' < "$1" > /tmp/main.go
-        cat /tmp/main.go > "$1"
+    handle=$(basename "$1")
+    cp "$1" "/tmp/${handle}"
+
+    gofmt -w -s -e "/tmp/${handle}"
+
+    awk '{ gsub(/\t/, "    "); print }' < "/tmp/${handle}" > "/tmp/${handle}.copy"
+    mv "/tmp/${handle}.copy" "/tmp/${handle}"
+
+    if diff "$1" "/tmp/${handle}" > /dev/null 2>&1; then
+        rm "/tmp/${handle}"
+    else
+        mv "/tmp/${handle}" "$1"
     fi
 }
 
@@ -25,8 +34,8 @@ goall() {
 }
 
 rung() {
-    handle=$(echo "$1" | sed 's/^[a-z\/]*\/\(.*\)\.[a-z]*$/\1/')
-    go build -gcflags "-m" -o "$GOPATH/bin/$handle" "$1" || return
+    handle=$(basename "$1" .go)
+    go build -gcflags -m -o "$GOPATH/bin/$handle" "$1" || return
     "$GOPATH/bin/$handle"
 }
 
